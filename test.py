@@ -17,7 +17,7 @@ k = 6
 a = 2
 z1 = 0
 z2 = 2
-N = 10
+N = 40
 
 Z = np.linspace(z1, z2, N+1)
 
@@ -159,10 +159,14 @@ def K(i, j):
 Kernels = np.zeros((N, N), dtype = np.float)
 
 for i in range(N):
+    s = ""
     for j in range(N):
-       Kernels[i][j] = K(i, j)
-       printf(Kernels[i][j])
-    print()
+        
+        Kernels[i][j] = K(i, j)
+        s += "{:.1f}".format(Kernels[i][j])
+        s += " "
+
+    print(s)
 
 #Kernels[0][0] = K(0, 0)
 #printf(Kernels[0][0])
