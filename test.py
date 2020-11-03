@@ -17,7 +17,7 @@ k = 6
 a = 2
 z1 = 0
 z2 = 2
-N = 40
+N = 70
 
 Z = np.linspace(z1, z2, N+1)
 
@@ -35,9 +35,9 @@ def f(z):
 
 def derivative(z):
     if z > 0 and z <= 1:
-        return -6*(z**2)+6*z
+        return -3*(z**2)+3*z
     elif z > 1 and z <= 2:
-        return 6*((z-2)**2)+6*(z-2)
+        return 3*((z-2)**2)+3*(z-2)
     else:
         return 0
 
@@ -153,7 +153,6 @@ def K(i, j):
         else:           
             return sum + res - psi
 
-
 #============================================================================
 
 Kernels = np.zeros((N, N), dtype = np.float)
@@ -163,7 +162,12 @@ for i in range(N):
     for j in range(N):
         
         Kernels[i][j] = K(i, j)
-        s += "{:.1f}".format(Kernels[i][j])
+        if (Kernels[i][j] < 0.01):
+            s += "\033[37m {:.1f}".format(Kernels[i][j])
+        elif (Kernels[i][j] < 0.1):
+            s += "\033[36m {:.1f}".format(Kernels[i][j])
+        else:
+            s += "\033[34m {:.1f}".format(Kernels[i][j])
         s += " "
 
     print(s)
