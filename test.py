@@ -16,7 +16,7 @@ class Point:
 k = 6
 a = 2
 z1 = 0
-z2 = 2
+z2 = 3
 N = 70
 
 Z = np.linspace(z1, z2, N+1)
@@ -28,16 +28,16 @@ sumCount = 20
 def f(z):
     if z > 0 and z <= 1:
         return 0.5*(-2*(z**3)+3*(z**2))
-    elif z > 1 and z <= 2:
-        return 0.5*(2*((z-2)**3)+3*((z-2)**2))
+    elif z > 1 and z <= 3:
+        return 0.5*(0.25*((z-3)**3)+0.75*((z-3)**2))
     else:
         return 0
 
 def derivative(z):
     if z > 0 and z <= 1:
         return 0.5*(-6*(z**2)+6*z)
-    elif z > 1 and z <= 2:
-        return 0.5*(6*((z-2)**2)+6*(z-2))
+    elif z > 1 and z <= 3:
+        return 0.5*(0.75*((z-2)**2)+1.5*(z-2))
     else:
         return 0
 
@@ -172,17 +172,6 @@ for i in range(N):
 
     print(s)
 
-#Kernels[0][0] = K(0, 0)
-#printf(Kernels[0][0])
-
-#print("======================")
-
-#Kernels[0][1] = K(0, 1)
-#printf(Kernels[0][1])
-
-
-
-#print("{:f}".format(G(M, P)))
 
 #x = np.linspace(0, 1, 1000)    # Create a list of evenly-spaced numbers over the range
 #plt.plot(Z, f(Z))              # Plot the sine of each x point
