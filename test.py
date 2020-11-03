@@ -35,9 +35,9 @@ def f(z):
 
 def derivative(z):
     if z > 0 and z <= 1:
-        return -3*(z**2)+3*z
+        return 0.5*(-6*(z**2)+6*z)
     elif z > 1 and z <= 2:
-        return 3*((z-2)**2)+3*(z-2)
+        return 0.5*(6*((z-2)**2)+6*(z-2))
     else:
         return 0
 
