@@ -26,13 +26,13 @@ sumCount = 20
 #============================================================================
 
 def f(z):
-    if z > 0 and z <= 4:
-        return 0.5*(sin(pi*(z-0.5)) + 1)
+    if z > 0 and z <= 2:
+        return 0.5*(sin(pi*(z-0.5)) + 1)  
     else:
         return 0
 
 def derivative(z):
-    if z > 0 and z <= 4:
+    if z > 0 and z <= 2:
         return 0.5*pi*cos(pi*(z-0.5))
     else:
         return 0
