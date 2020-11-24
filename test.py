@@ -13,29 +13,128 @@ class Point:
 
 #============================================================================
 
-k = 6
-a = 2
-z1 = 0
-z2 = 4
-N = 70
-
-Z = np.linspace(z1, z2, N+1)
-
 sumCount = 20
+N = 0
+Z = 0
 
-#============================================================================
+switcher = 1
 
-def f(z):
-    if z > 0 and z <= 2:
-        return 0.5*(sin(pi*(z-0.5)) + 1)  
-    else:
-        return 0
+if(switcher == 0):
+   
+    k = 6
+    a = 2
+    z1 = 0
+    z2 = 4
+    N = 70
+    Z = np.linspace(z1, z2, N+1)
+    
+    def f(z):
+        if z > 0 and z <= 2:
+            return 0.5*(sin(pi*(z-0.5)) + 1)
+        else:
+            return 0
 
-def derivative(z):
-    if z > 0 and z <= 2:
-        return 0.5*pi*cos(pi*(z-0.5))
-    else:
-        return 0
+    def derivative(z):
+        if z > 0 and z <= 2:
+            return 0.5*pi*cos(pi*(z-0.5))
+        else:
+            return 0
+    
+    x = np.linspace(0, 2, 1001)
+    y = 0.5*(np.sin(pi*(x-0.5)) + 1)
+    plt.plot(x, y)
+    x = np.linspace(2, 4, 2)
+    y = np.zeros(2)
+    plt.plot(x, y)
+                      
+elif(switcher == 1):
+   
+    k = 6
+    a = 2
+    z1 = 0
+    z2 = 2
+    N = 70
+    Z = np.linspace(z1, z2, N+1)
+    
+    def f(z):
+        if z > 0 and z <= 1:
+            return 0.5*(-2*(z**3)+3*(z**2))
+        elif z > 1 and z <= 2:
+            return 0.5*(2*((z-2)**3)+3*((z-2)**2))
+        else:
+            return 0
+
+    def derivative(z):
+        if z > 0 and z <= 1:
+            return 0.5*(-6*(z**2)+6*z)
+        elif z > 1 and z <= 2:
+            return 0.5*(6*((z-2)**2)+6*(z-2))
+        else:
+            return 0
+
+    x = np.linspace(0, 1, 1001)
+    y = 0.5*(-2*(x**3)+3*(x**2))
+    plt.plot(x, y)
+    x = np.linspace(1, 2, 1001)
+    y = 0.5*(2*((x-2)**3)+3*((x-2)**2))
+    plt.plot(x, y)
+
+elif(switcher == 2):
+
+    k = 6
+    a = 2
+    z1 = 0
+    z2 = 3
+    N = 70
+    Z = np.linspace(z1, z2, N+1)
+    
+    def f(z):
+        if z > 0 and z <= 1:
+            return 0.5*(-2*(z**3)+3*(z**2))
+        elif z > 1 and z <= 3:
+            return 0.5*(0.25*((z-3)**3)+0.75*((z-3)**2))
+        else:
+            return 0
+
+    def derivative(z):
+        if z > 0 and z <= 1:
+            return 0.5*(-6*(z**2)+6*z)
+        elif z > 1 and z <= 3:
+            return 0.5*(0.75*((z-2)**2)+1.5*(z-2))
+        else:
+            return 0
+
+    x = np.linspace(0, 1, 1001)
+    y = 0.5*(-2*(x**3)+3*(x**2))
+    plt.plot(x, y)
+    x = np.linspace(1, 3, 1001)
+    y = 0.5*(0.25*((x-3)**3)+0.75*((x-3)**2))
+    plt.plot(x, y)  
+
+elif(switcher == 3):
+    
+    k = 6
+    a = 2
+    z1 = 0
+    z2 = 4
+    N = 70
+    Z = np.linspace(z1, z2, N+1)
+
+    def f(z):
+        if z > 0 and z <= 4:
+            return 0.5*(sin(pi*(z-0.5)) + 1)
+        else:
+            return 0
+
+    def derivative(z):
+        if z > 0 and z <= 4:
+            return 0.5*pi*cos(pi*(z-0.5))
+        else:
+            return 0
+
+    x = np.linspace(0, 4, 1001)
+    y = 0.5*(np.sin(pi*(x-0.5)) + 1)
+    plt.plot(x, y)
 
 def J(z):
     return sqrt(1+(derivative(z))**2)
@@ -158,16 +257,13 @@ for i in range(N):
     for j in range(N):
         
         Kernels[i][j] = K(i, j)
-        if (Kernels[i][j] < 0.01):
+        if (abs(Kernels[i][j]) < 0.01):
             s += "\033[37m {:>4.1f}".format(Kernels[i][j])
-        elif (Kernels[i][j] < 0.1):
+        elif (abs(Kernels[i][j]) < 0.1):
             s += "\033[36m {:>4.1f}".format(Kernels[i][j])
         else:
             s += "\033[34m {:>4.1f}".format(Kernels[i][j])
 
     print(s)
 
-
-#x = np.linspace(0, 1, 1000)    # Create a list of evenly-spaced numbers over the range
-#plt.plot(Z, f(Z))              # Plot the sine of each x point
-#plt.show()                     # Display the plot
+plt.show()                     
