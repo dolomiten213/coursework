@@ -13,11 +13,11 @@ class Point:
 
 #============================================================================
 
-sumCount = 20
-N = 0
+sumCount = 50
+N = 45
 Z = 0
 
-switcher = 1
+switcher = 2
 
 if(switcher == 0):
    
@@ -25,7 +25,6 @@ if(switcher == 0):
     a = 2
     z1 = 0
     z2 = 4
-    N = 70
     Z = np.linspace(z1, z2, N+1)
     
     def f(z):
@@ -53,7 +52,6 @@ elif(switcher == 1):
     a = 2
     z1 = 0
     z2 = 2
-    N = 70
     Z = np.linspace(z1, z2, N+1)
     
     def f(z):
@@ -85,7 +83,6 @@ elif(switcher == 2):
     a = 2
     z1 = 0
     z2 = 3
-    N = 70
     Z = np.linspace(z1, z2, N+1)
     
     def f(z):
@@ -117,7 +114,6 @@ elif(switcher == 3):
     a = 2
     z1 = 0
     z2 = 4
-    N = 70
     Z = np.linspace(z1, z2, N+1)
 
     def f(z):
@@ -145,26 +141,44 @@ def fi(a, m, x):
     return sqrt(2/a)*sin(pi*m*x/a)
 
 def pm(m):
-    x = (k**2)-((pi*m/a)**2)
+    x = ((pi*m/a)**2)-(k**2)
     if x > 0:
-        return sqrt(x)
+        return complex(sqrt(x), 0)
     else:
-        return sqrt(-x)
+        return complex(0, sqrt(-x))
+
+def gamma(m):
+    b = k**2-(pi*m/a)**2
+    if(b > 0):
+        return sqrt(b)
+    else:
+        return sqrt(b) 
 
 #============================================================================
 
 def G(M, P): 
     sum = 0
-    for m in range(1, sumCount + 1):
-        x = 0
-
-        x = x + (2*pi)/(a*pm(m))*exp(-pm(m)*abs(M.z-P.z))
-        x = x + (-2/m)*exp((-pi*m/a)*abs(M.z-P.z))
-        x = x * sin((pi*m/a)*M.x)
-        x = x * sin((pi*m/a)*P.x)
-
-        sum += x
+    for m in range(1, sumCount + 1):        
+        x = complex(0,0)
+        b = ((pi*m/a)**2)-(k**2)
+       
+        if b < 0:
+            x = x + (complex(2*pi/a, 0) / pm(m) * complex(cos(pm(m).imag*abs(M.z-P.z)), -sin(pm(m).imag*abs(M.z-P.z))))
+            x = x + complex((-2/m)*exp((-pi*m/a)*abs(M.z-P.z)), 0)
+            x = x * complex(sin((pi*m/a)*M.x), 0)
+            x = x * complex(sin((pi*m/a)*P.x), 0)
+        else:
+            x = x + (2*pi)/(a*pm(m).real) * exp(-pm(m).real*abs(M.z-P.z))        
+            x = x + (-2/m)*exp((-pi*m/a)*abs(M.z-P.z))
+            x = x * sin((pi*m/a)*M.x)
+            x = x * sin((pi*m/a)*P.x)
         
+        #print(x)
+        #print("\033[37m {:>4.5f}".format(abs(x)))
+        sum += x
+        #print(abs(sum))
+        
+    #print("==============") 
     return sum
 
 def psea(M, P):
@@ -185,7 +199,7 @@ def psea(M, P):
 #def lnF(M,P):
 #   return 0.5*log(psea(M, P))
 
-#def g(M, P):
+#def g(M, P): 
 #    return G(M, P) + lnF(M, P)
 
 def K(i, j):
@@ -215,7 +229,6 @@ def K(i, j):
         return sum - psi
     
     elif abs(zm - zp) <= L/2:
-
         res = 0
         res = psea(M, P) * ((abs(zp - zm))**2)
         res = 0.5*log(res)
@@ -248,22 +261,111 @@ def K(i, j):
         else:           
             return sum + res - psi
 
-#============================================================================
+def R(i):
+    zm = (Z[i] + Z[i+1])/2
+    return -complex(fi(a, 1, f(zm)) * cos(gamma(1)*zm), fi(a, 1, f(zm)) * sin(gamma(1)*zm))                                          
 
-Kernels = np.zeros((N, N), dtype = np.float)
+#============================================================================
+Kernels = np.zeros((N, N), dtype = np.complex)
+Right = np.zeros(N , dtype = np.complex)
+#KernelsRe = np.zeros((N, N), dtype = np.float)
+#KernelsIm = np.zeros((N, N), dtype = np.float)
 
 for i in range(N):
     s = ""
     for j in range(N):
+        Kernels[i][j] = K(i,j)/(2*pi)
+        temp = Kernels[i][j]
+        re = temp.real
+        im = temp.imag
         
-        Kernels[i][j] = K(i, j)
-        if (abs(Kernels[i][j]) < 0.01):
-            s += "\033[37m {:>4.1f}".format(Kernels[i][j])
-        elif (abs(Kernels[i][j]) < 0.1):
-            s += "\033[36m {:>4.1f}".format(Kernels[i][j])
+        if (abs(temp) < 0.01):
+            s += "\033[37m {:>4.1f}{:>4.1f}i".format(re, im)     
+        elif (abs(temp) < 0.1):
+            s += "\033[36m {:>4.1f}{:>4.1f}i".format(re, im) 
         else:
-            s += "\033[34m {:>4.1f}".format(Kernels[i][j])
-
+            s += "\033[34m {:>4.1f}{:>4.1f}i".format(re, im) 
+    Right[i] = R(i)
+    temp = Right[i]
+    re = temp.real
+    im = temp.imag
+        
+    if (abs(temp) < 0.01):
+        s += "  \033[37m {:>4.1f}{:>4.1f}i".format(re, im)     
+    elif (abs(temp) < 0.1):
+        s += "  \033[36m {:>4.1f}{:>4.1f}i".format(re, im) 
+    else:
+        s += "  \033[34m {:>4.1f}{:>4.1f}i".format(re, im)     
+       
     print(s)
 
-plt.show()                     
+#print(np.linalg.solve(Kernels, Right))
+Ans = np.linalg.solve(Kernels, Right)
+
+#for i in range(N):
+#    l = abs(Ans[i])
+#    x = np.linspace(Z[i], Z[i+1], 10)
+#    y = np.full(10, l)
+#    plt.plot(x, y) 
+#plt.show()
+
+#for i in range(N):
+#    x = np.linspace(Z[i], Z[i+1], 10)
+#    y = np.full(10, Ans[i].imag)
+#    plt.plot(x, y)
+#    y = np.full(10, Ans[i].real)
+#    plt.plot(x, y)
+#plt.show()
+x = np.linspace((Z[0]+Z[1])/2, (Z[N-1]+Z[N])/2, N)
+mylist = []
+
+for i in range(N):
+    mylist.append(abs(Ans[i]))
+
+y = np.array(mylist)
+
+plt.plot(x, y)
+plt.show()
+
+
+
+KernelsRe = np.zeros((N, N), dtype = np.float)
+KernelsIm = np.zeros((N, N), dtype = np.float)
+
+
+#M = Point()
+#M.x = 0.1
+#M.z = 0.15
+#P = Point()
+#P.x = 0.12
+#P.z = 0.16
+
+#print(G(M,P))
+
+#for i in range(N):
+    #s = ""
+    #for j in range(N):
+        
+        #KernelsRe[i][j] = K(i, j).real
+        #KernelsIm[i][j] = K(i, j).imag
+        #if (sqrt(KernelsRe[i][j]**2 + KernelsIm[i][j]**2) < 1):
+        #    s += "\033[37m {:>4.1f}".format(KernelsRe[i][j])
+        #    s += " +i"
+        #    s += "\033[37m {:>4.1f}".format(KernelsIm[i][j])
+        #else:
+        #    s += "\033[36m {:>4.1f}".format(KernelsRe[i][j])
+        #    s += " +i"
+        #    s += "\033[36m {:>4.1f}".format(KernelsIm[i][j])
+        
+        
+        #elif (abs(Kernels[i][j]) < 0.1):
+        #   s += "\033[36m {:>4.1f}".format(Kernels[i][j])
+        #else:
+        #   s += "\033[34m {:>4.1f}".format(Kernels[i][j])
+
+    #print(s)
+
+#plt.show()
+
+#a = 3+4j                     
+#print(abs(a))
